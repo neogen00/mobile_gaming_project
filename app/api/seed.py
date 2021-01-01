@@ -18,16 +18,16 @@ db.reset_all_primarykey(db.conn, db.cursor)
 
 # seeding games
 amongus = db.save(Game(name = 'Among Us', platform = 'Android', publisher = 'Innersloth LLC', 
-    year_published = 2018, genre = 'Action', game_engine = 'Unity'), db.conn, db.cursor)
+    release_date = '2018-11-2', genre = 'Action', game_engine = 'Unity'), db.conn, db.cursor)
 
 roblox = db.save(Game(name = 'Roblox', platform = 'Android', publisher = 'Roblox Corporation', 
-    year_published = 2019, genre = 'Building', game_engine = 'Something Else'), db.conn, db.cursor)
+    release_date = '2019-12-31', genre = 'Building', game_engine = 'Something Else'), db.conn, db.cursor)
 
 candy = db.save(Game(name = 'Candy Crush Saga', platform = 'Android', publisher = 'King', 
-    year_published = 2015, genre = 'Casual', game_engine = 'Candy Factory'), db.conn, db.cursor)
+    release_date = '2015-1-1', genre = 'Casual', game_engine = 'Candy Factory'), db.conn, db.cursor)
 
 amongus_ios = db.save(Game(name = 'Among Us', platform = 'iOS', publisher = 'Innersloth LLC', 
-    year_published = 2018, genre = 'Action', game_engine = 'Unity'), db.conn, db.cursor)
+    release_date = '2018-11-2', genre = 'Action', game_engine = 'Unity'), db.conn, db.cursor)
 # breakpoint()
 # seeding ratings
 no1 = db.save(Rating(game_id = amongus.id, metacritic = 84, TS_rating = 4.465, 
@@ -43,14 +43,14 @@ no1_ios = db.save(Rating(game_id = amongus_ios.id, metacritic = 84, TS_rating = 
     rank_type = 'free', ranking = 1, date_created = '2020-12-01'), db.conn, db.cursor)
 
 # seeding earnings
-amongus_e = db.save(Earnings(game_id = amongus.id, price = 0.00, inapp = 'yes', 
+amongus_e = db.save(Earnings(game_id = amongus.id, price = 0.00, inapp = True, 
     revenue = 35000000, downloads = 100000), db.conn, db.cursor)
 
-roblox_e = db.save(Earnings(game_id = roblox.id, price = 0.01, inapp = 'yes', 
+roblox_e = db.save(Earnings(game_id = roblox.id, price = 0.01, inapp = False, 
     revenue = 50000000, downloads = 200000), db.conn, db.cursor)
 
-candy_e = db.save(Earnings(game_id = candy.id, price = 0.50, inapp = 'no', 
+candy_e = db.save(Earnings(game_id = candy.id, price = 0.50, inapp = True, 
     revenue = 100000000, downloads = 300000), db.conn, db.cursor)
 
-amongus_ios_e = db.save(Earnings(game_id = amongus_ios.id, price = 1.00, inapp = 'yes', 
+amongus_ios_e = db.save(Earnings(game_id = amongus_ios.id, price = 1.00, inapp = False, 
     revenue = 2000000, downloads = 75000), db.conn, db.cursor)
