@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS games (
   name VARCHAR(255) NOT NULL,
   platform VARCHAR(255),
   publisher VARCHAR(255),
-  year_published INTEGER,
+  release_date DATE,
   genre VARCHAR(255),
   game_engine VARCHAR(255)
 );
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS earnings (
   id serial PRIMARY KEY,
   game_id INTEGER,
   price DECIMAL,
-  inapp VARCHAR(255),
+  inapp BOOLEAN,
   revenue BIGINT,
   downloads BIGINT,
   CONSTRAINT fk_game

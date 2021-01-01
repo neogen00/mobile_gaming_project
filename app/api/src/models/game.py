@@ -4,7 +4,7 @@
 class Game():
     __table__ = 'games'
     columns = ['id', 'name', 'platform', 'publisher',
-            'year_published', 'genre', 'game_engine']
+            'release_date', 'genre', 'game_engine']
 
     def __init__(self, **kwargs):
         for key in kwargs.keys():
