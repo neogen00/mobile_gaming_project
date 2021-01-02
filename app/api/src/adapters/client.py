@@ -1,6 +1,6 @@
 import requests
 
-class RAWG_Clent:
+class RAWG_Client:
     api_key = '<insert key>'
     ROOT_URL = 'https://api.rawg.io/api'
 
@@ -17,7 +17,7 @@ class RAWG_Clent:
         return response.json()['results'][0]
 
 
-class IGDB_Clent:
+class IGDB_Client:
     def __init__(self, client_id = '<insert cliend_id>', client_secret = '<insert client secret>'):
 
         self.client_id = client_id
@@ -62,7 +62,7 @@ class IGDB_Clent:
         return response.json()
 
 
-class TowerSensor_Clent:
+class TowerSensor_Client:
     def __init__(self, user_agent = '<insert user parameters>', x_csrf_token = '<insert user token>'):
 
         self.user_agent = user_agent
