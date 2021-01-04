@@ -8,9 +8,6 @@ import psycopg2
 
 import api.src.db as db
 import api.src.models as models
-# from src.models.game import Game
-# from src.models.rating import Rating
-# from src.models.earnings import Earnings
 
 # delete/truncate all tables and reset primary keys
 db.drop_all_tables(db.conn, db.cursor)
@@ -18,13 +15,13 @@ db.reset_all_primarykey(db.conn, db.cursor)
 
 
 # seeding games
-amongus = db.save(models.Game(name = 'Among Us', platform = 'Android', publisher = 'Innersloth LLC', 
+amongus = db.save(models.Game(name = 'Among Us', platform = 'android', publisher = 'Innersloth LLC', 
     release_date = '2018-11-2', genre = 'Action', game_engine = 'Unity'), db.conn, db.cursor)
 
-roblox = db.save(models.Game(name = 'Roblox', platform = 'Android', publisher = 'Roblox Corporation', 
+roblox = db.save(models.Game(name = 'Roblox', platform = 'android', publisher = 'Roblox Corporation', 
     release_date = '2019-12-31', genre = 'Building', game_engine = 'Something Else'), db.conn, db.cursor)
 
-candy = db.save(models.Game(name = 'Candy Crush Saga', platform = 'Android', publisher = 'King', 
+candy = db.save(models.Game(name = 'Candy Crush Saga', platform = 'android', publisher = 'King', 
     release_date = '2015-1-1', genre = 'Casual', game_engine = 'Candy Factory'), db.conn, db.cursor)
 
 amongus_ios = db.save(models.Game(name = 'Among Us', platform = 'iOS', publisher = 'Innersloth LLC', 

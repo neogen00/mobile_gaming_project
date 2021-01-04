@@ -2,11 +2,8 @@ from flask import Flask
 import simplejson as json
 from flask import request
 
-from .db import db
-from .models.game import Game
-from .models.earnings import Earnings
-from .models.rating import Rating
-
+import api.src.models as models
+import api.src.db as db
 
 def create_app(database='videogame', testing = False, debug = True):
     """Create and configure an instance of the Flask application."""
