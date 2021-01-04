@@ -1,1 +1,1 @@
-# video_game_project
+# mobile_gaming_project
