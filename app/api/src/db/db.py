@@ -1,6 +1,9 @@
 from flask import current_app
 from flask import g
 import psycopg2
+import unidecode
+import string
+import re
 
 conn = psycopg2.connect(database = 'videogame', user = 'postgres', password = 'postgres')
 cursor = conn.cursor()
@@ -97,3 +100,21 @@ def find_or_build_by_name(Class, name, cursor):
         obj.name = name
     return obj
 
+def isUnicode(s):
+    try:
+        s.encode(encoding='utf-8').decode('ascii')
+    except UnicodeDecodeError:
+        return False
+    else:
+        return True
+
+def encode_utf8(str_raw):
+    temp_s = unidecode.unidecode(str_raw)
+    return temp_s.split('[')[0]
+
+def filter_name(name):
+    return ''.join(filter(lambda x: x in string.printable, name))
+
+def strip_str_special(s):
+    res = re.findall(r"[\w']+", s)
+    new_name = " ".join(res)

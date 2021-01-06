@@ -1,4 +1,5 @@
 import psycopg2
+import string
 
 import api.src.models as models
 import api.src.db as db
@@ -7,6 +8,7 @@ import api.src.adapters as adapters
 class Builder:
     def run(self, TS_details, search_date, rank_type, conn, cursor):
         game = GameBuilder().run(TS_details, conn, cursor)
+        print(game.__dict__)
         rating = RatingBuilder().run(TS_details, game, search_date, rank_type, conn, cursor)
         if game.exists:
             return {'game': game, 'rating': rating, 'earnings': game.earnings(cursor)}
@@ -22,23 +24,23 @@ class GameBuilder:
     attributes = ['name', 'platform', 'publisher', 'release_date', 'genre', 'game_engine']
 
     def select_attributes(self, TS_details):
-        name, platform, publisher, genre = TS_details['name'], TS_details['os'], TS_details['publisher_name'], TS_details['categories'][0].split('_')[1]
-        game_engine = self.IGDB_Client.find_game_engine(name)
-        release_date = self.RAWG_Client.find_release_date(name)
-        return dict(zip(self.attributes, [name, platform, publisher, release_date, genre, game_engine]))
+        name_filtered = db.filter_name(db.encode_utf8(TS_details.get('humanized_name','')))
+        game_engine = self.IGDB_Client.find_game_engine(name_filtered)
+        release_date = self.RAWG_Client.find_release_date(name_filtered)
+        if TS_details['os'] == 'ios':
+            return dict(zip(self.attributes, [name_filtered, 'iOS', TS_details['publisher_name'], release_date, str(TS_details['categories']), game_engine]))
+        return dict(zip(self.attributes, [name_filtered, 'android', TS_details['publisher_name'], release_date, TS_details['categories'][0].split('_')[1], game_engine]))
 
     def run(self, TS_details, conn, cursor):
         selected = self.select_attributes(TS_details)
-        game_name = selected['name']
-        game_platform = selected['platform']
+        game_name, game_platform = selected['name'], selected['platform']
         game = models.Game.find_by_game_name_platform(game_name, game_platform, cursor)
         if game:
             game.exists = True
-            return game
         else:
             game = db.save(models.Game(**selected), conn, cursor)
             game.exists = False
-            return game
+        return game
 
 class EarningsBuilder:
     attributes = ['price', 'inapp', 'revenue', 'downloads']
@@ -66,12 +68,9 @@ class RatingBuilder:
         return dict(zip(self.attributes, [metacritic, TS_rating, ranking_type, ranking, date_created]))
 
     def run(self, TS_details, game, search_date, rank_type, conn, cursor):
-        # breakpoint()
         selected = self.select_attributes(TS_details, search_date, rank_type)
         selected['game_id'] = game.id
         rating = models.Rating.find_by(selected['game_id'], selected['rank_type'], selected['ranking'], selected['date_created'], cursor)
-        if rating:
-            return rating
-        else:
+        if not rating:
             rating = db.save(models.Rating(**selected), conn, cursor)
-            return rating
+        return rating

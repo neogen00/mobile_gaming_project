@@ -16,6 +16,27 @@ class RAWG_Client:
         response = requests.get(f"{self.ROOT_URL}/games?", self.full_params(query_params))
         return response.json()['results'][0]
 
+    def find_release_date(self, name = 'Among Us'):
+        game = self.request_games(query_params = {'search': name})
+        if not game:
+            return None
+        elif not game['name'] == name:
+            return None
+        release_date = game.get('released',[])
+        if not release_date:
+            return None
+        return release_date
+
+    def find_metacritic(self, name = 'Among Us'):
+        game = self.request_games(query_params = {'search': name})
+        if not game:
+            return None
+        elif not game['name'] == name:
+            return None
+        metacritic = game.get('metacritic',[])
+        if not metacritic:
+            return None
+        return metacritic
 
 class IGDB_Client:
     def __init__(self, client_id = '<insert cliend_id>', client_secret = '<insert client secret>'):

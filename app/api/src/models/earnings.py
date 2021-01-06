@@ -11,4 +11,6 @@ class Earnings():
             if key not in self.columns:
                 raise f'{key} not in {self.columns}' 
         for k, v in kwargs.items():
+            if not v:
+                v = None
             setattr(self, k, v)

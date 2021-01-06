@@ -31,3 +31,14 @@ class Game():
         cursor.execute(earnings_query, (self.id,))
         record = cursor.fetchone()
         return db.build_from_record(models.Earnings, record)
+    
+    def get_sibling(self, name, os, cursor):
+        new_name = db.strip_str_special(name)
+        os_bar = {'android':'iOS', 'iOS':'android'}
+        query = """SELECT * FROM %s 
+                    WHERE platform = '%s' 
+                    AND name LIKE '%s%';"""
+        cursor.execuite(query, (self.__table__, os_bar[os], name))
+        record = cursor.fetchone()
+        return db.build_from_record(models.Game, record)
+    
