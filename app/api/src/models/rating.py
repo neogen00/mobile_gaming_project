@@ -15,7 +15,6 @@ class Rating():
 
     @classmethod
     def find_by(self, game_id, rank_type, ranking, date_created, cursor):
-        # breakpoint()
         rating_query = "SELECT * FROM ratings WHERE game_id = %s AND rank_type = %s AND ranking = %s AND date_created = %s;"
         cursor.execute(rating_query, (game_id, rank_type, ranking, date_created))
         record = cursor.fetchone()

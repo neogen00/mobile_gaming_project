@@ -1,5 +1,5 @@
 import psycopg2
-import string
+# import string
 
 import api.src.models as models
 import api.src.db as db
@@ -10,10 +10,15 @@ class Builder:
         game = GameBuilder().run(TS_details, conn, cursor)
         print(game.__dict__)
         rating = RatingBuilder().run(TS_details, game, search_date, rank_type, conn, cursor)
+        print(rating.__dict__)   # remove after testing
         if game.exists:
-            return {'game': game, 'rating': rating, 'earnings': game.earnings(cursor)}
+            earnings = game.earnings(TS_details, conn, cursor)   # remove after testing
+            print(earnings.__dict__)   # remove after testing
+            return {'game': game, 'rating': rating, 'earnings': earnings}   # remove after testing
+            # return {'game': game, 'rating': rating, 'earnings': game.earnings(cursor)}    # put back after testing
         else:
             earnings = EarningsBuilder().run(TS_details, game, conn, cursor)
+            print(earnings.__dict__)
             return {'game': game, 'rating': rating, 'earnings': earnings}
 
 class GameBuilder:
@@ -25,21 +30,22 @@ class GameBuilder:
 
     def select_attributes(self, TS_details):
         name_filtered = db.filter_name(db.encode_utf8(TS_details.get('humanized_name','')))
-        game_engine = self.IGDB_Client.find_game_engine(name_filtered)
         release_date = self.RAWG_Client.find_release_date(name_filtered)
         if TS_details['os'] == 'ios':
-            return dict(zip(self.attributes, [name_filtered, 'iOS', TS_details['publisher_name'], release_date, str(TS_details['categories']), game_engine]))
-        return dict(zip(self.attributes, [name_filtered, 'android', TS_details['publisher_name'], release_date, TS_details['categories'][0].split('_')[1], game_engine]))
+            return dict(zip(self.attributes, [name_filtered, 'iOS', TS_details['publisher_name'], release_date, str(TS_details['categories']), None]))
+        return dict(zip(self.attributes, [name_filtered, 'android', TS_details['publisher_name'], release_date, TS_details['categories'][0].split('_')[1], None]))
 
     def run(self, TS_details, conn, cursor):
         selected = self.select_attributes(TS_details)
         game_name, game_platform = selected['name'], selected['platform']
         game = models.Game.find_by_game_name_platform(game_name, game_platform, cursor)
         if game:
-            game.exists = True
+            game.exists = True            
         else:
+            selected['game_engine'] = self.IGDB_Client.find_game_engine(game_name)  # limited query allowance, tap when DNE          
             game = db.save(models.Game(**selected), conn, cursor)
             game.exists = False
+        game.try_sibling_params_if_None(conn, cursor)
         return game
 
 class EarningsBuilder:
