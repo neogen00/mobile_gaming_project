@@ -1,29 +1,5 @@
 import pdb
-
-# from api.src.adapters.client_debug import RAWG_Client
-# from api.src.adapters.client_debug import IGDB_Client
-# from api.src.adapters.client_debug import TowerSensor_Client
-
-import api.src.db as db
 import api.src.adapters as adapters
-
-
-# @pytest.fixture()
-# def test_conn():
-#     test_conn = psycopg2.connect(dbname = 'mobilegaming_test', 
-#             user = 'postgres', password = 'postgres')
-#     cursor = test_conn.cursor()
-#     db.drop_all_tables(test_conn, cursor)
-#     db.reset_all_primarykey(test_conn, cursor)
-#     yield test_conn
-#     db.drop_all_tables(test_conn, cursor)
-#     db.reset_all_primarykey(test_conn, cursor)
-
-
-
-
-
-
 
 
 def test_find_game_engine_hit():
