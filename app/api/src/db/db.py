@@ -1,11 +1,8 @@
 from flask import current_app
 from flask import g
 import psycopg2
-import unidecode
-import string
-import re
 
-conn = psycopg2.connect(database = 'videogame', user = 'postgres', password = 'postgres')
+conn = psycopg2.connect(database = 'mobilegaming_development', user = 'postgres', password = 'postgres')
 cursor = conn.cursor()
 
 def get_db():
@@ -30,10 +27,16 @@ def build_from_records(Class, records):
    return [build_from_record(Class, record) for record in records]
 
 def find_all(Class, cursor):
-    sql_str = f"SELECT * FROM {Class.__table__}"
+    sql_str = f"SELECT * FROM {Class.__table__} ORDER BY id"
     cursor.execute(sql_str)
     records = cursor.fetchall()
     return [build_from_record(Class, record) for record in records]
+
+def find_all_games_withattr(Class, attribute, cursor):
+    sql_str = f"SELECT {attribute} FROM {Class.__table__}"
+    cursor.execute(sql_str)
+    record = cursor.fetchone()
+    return build_from_record(Class, record)
 
 def find(Class, id, cursor):
     sql_str = f"SELECT * FROM {Class.__table__} WHERE id = %s"
@@ -100,21 +103,30 @@ def find_or_build_by_name(Class, name, cursor):
         obj.name = name
     return obj
 
-def isUnicode(s):
-    try:
-        s.encode(encoding='utf-8').decode('ascii')
-    except UnicodeDecodeError:
-        return False
-    else:
-        return True
+def update_engine_reldate(obj, conn, cursor):
+    game_str = f"""UPDATE {obj.__table__} SET game_engine = '{obj.game_engine}', release_date = '{obj.release_date}'
+                    WHERE id = {obj.id};"""
+    cursor.execute(game_str, list(values(obj)))
+    conn.commit()
+    return 
 
-def encode_utf8(str_raw):
-    temp_s = unidecode.unidecode(str_raw)
-    return temp_s.split('[')[0]
+def update_genre(obj, conn, cursor):
+    game_str = f"""UPDATE {obj.__table__} SET genre = '{obj.genre}'
+                    WHERE id = {obj.id};"""
+    cursor.execute(game_str, list(values(obj)))
+    conn.commit()
+    return
 
-def filter_name(name):
-    return ''.join(filter(lambda x: x in string.printable, name))
+def update_revenue(obj, conn, cursor):
+    earnings_str = f"""UPDATE earnings SET revenue = '{obj.revenue}'
+                    WHERE id = {obj.id};"""
+    cursor.execute(earnings_str)
+    conn.commit()
+    return
 
-def strip_str_special(s):
-    res = re.findall(r"[\w']+", s)
-    new_name = " ".join(res)
+def update_downloads(obj, conn, cursor):
+    earnings_str = f"""UPDATE earnings SET downloads = '{obj.downloads}'
+                    WHERE id = {obj.id};"""
+    cursor.execute(earnings_str)
+    conn.commit()
+    return
