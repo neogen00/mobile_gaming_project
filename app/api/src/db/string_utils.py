@@ -1,6 +1,5 @@
 import unidecode
 import string
-import re
 
 def isUnicode(s):
     try:
@@ -16,10 +15,6 @@ def encode_utf8(str_raw):
 
 def filter_name(name):
     return ''.join(filter(lambda x: x in string.printable, name))
-
-def strip_str_special(s):
-    res = re.findall(r"[\w']+", s)
-    new_name = " ".join(res)
 
 def strip_last_specialchar(s):
     if not s[-1].isalpha():
