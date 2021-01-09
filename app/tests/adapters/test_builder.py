@@ -2,7 +2,6 @@ import datetime
 from decimal import *
 import psycopg2
 import pytest
-import unidecode
 
 import api.src.db.db as db
 import api.src.models as models
