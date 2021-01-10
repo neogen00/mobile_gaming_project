@@ -39,7 +39,6 @@ class Game():
             earnings.downloads = TS_details['humanized_worldwide_last_month_downloads']['downloads']
             db.update_downloads(earnings, conn, cursor)
             earnings.update_update_dl = True
-        # return db.build_from_record(models.Earnings, record)
         return earnings
     
     def get_sibling(self, name, os, cursor):

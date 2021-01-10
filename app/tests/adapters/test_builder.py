@@ -6,7 +6,7 @@ import pytest
 import api.src.db.db as db
 import api.src.models as models
 import api.src.adapters as adapters
-from .builder_data import (TS_details, search_date, rank_type)
+from tests.data.builder_data import (TS_details, search_date, rank_type)
 
 
 @pytest.fixture()

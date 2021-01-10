@@ -7,12 +7,8 @@ class Builder:
         game = GameBuilder().run(TS_details, conn, cursor)
         print(game.__dict__)
         rating = RatingBuilder().run(TS_details, game, search_date, rank_type, conn, cursor)
-        print(rating.__dict__)   # remove after testing
         if game.exists:
-            earnings = game.earnings(TS_details, conn, cursor)   # remove after testing
-            print(earnings.__dict__)   # remove after testing
-            return {'game': game, 'rating': rating, 'earnings': earnings}   # remove after testing
-            # return {'game': game, 'rating': rating, 'earnings': game.earnings(cursor)}    # put back after testing
+            return {'game': game, 'rating': rating, 'earnings': game.earnings(TS_details, conn, cursor)} 
         else:
             earnings = EarningsBuilder().run(TS_details, game, conn, cursor)
             print(earnings.__dict__)
