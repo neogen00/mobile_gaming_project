@@ -31,14 +31,7 @@ class Game():
         cursor.execute(earnings_query, (self.id,))
         record = cursor.fetchone()
         earnings = db.build_from_record(models.Earnings, record)
-        if earnings.revenue < TS_details['humanized_worldwide_last_month_revenue']['revenue']: 
-            earnings.revenue = TS_details['humanized_worldwide_last_month_revenue']['revenue']
-            db.update_revenue(earnings, conn, cursor)
-            earnings.update_rev = True
-        if earnings.downloads < TS_details['humanized_worldwide_last_month_downloads']['downloads']: 
-            earnings.downloads = TS_details['humanized_worldwide_last_month_downloads']['downloads']
-            db.update_downloads(earnings, conn, cursor)
-            earnings.update_update_dl = True
+        earnings.check_update_revenue_downloads(TS_details, conn, cursor)
         return earnings
     
     def get_sibling(self, name, os, cursor):
@@ -50,15 +43,17 @@ class Game():
         return db.build_from_record(models.Game, record)
 
     def try_sibling_params_if_None(self, conn, cursor):
-        try:
-            sib, flag = self.get_sibling(self.name, self.platform, cursor), False
-        except:
-            cursor.execute('rollback;')
-            sib = None
+        try: sib = self.get_sibling(self.name, self.platform, cursor)
+        except: cursor.execute('rollback;')
         if not sib: return
         if self.platform == 'iOS':
             self.genre = sib.genre
             db.update_genre(self, conn, cursor)
+        self.check_update_game_engine_reldate(sib, conn, cursor)
+        return
+        
+    def check_update_game_engine_reldate(self, sib, conn, cursor):
+        flag = False
         if not self.game_engine: 
             if sib.game_engine: self.game_engine, flag = sib.game_engine, True
         if not self.release_date: 
@@ -70,8 +65,7 @@ class Game():
         game_json = self.__dict__
         earnings = self.earnings(cursor)
         if earnings:
-            earnings_dict = {'price': earnings.price, 'inapp': earnings.inapp, 'revenue': earnings.revenue,
-                                'downloads' : earnings.downloads}
+            earnings_dict = {'price': earnings.price, 'inapp': earnings.inapp, 'revenue': earnings.revenue, 'downloads' : earnings.downloads}
             game_json['earnings'] = earnings_dict
         return game_json
 
