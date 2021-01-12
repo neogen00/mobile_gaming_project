@@ -1,5 +1,5 @@
 import api.src.db as db
-# import models as models
+import api.src.models as models
 
 class Earnings():
     __table__ = 'earnings'
@@ -15,6 +15,11 @@ class Earnings():
                 v = False
             setattr(self, k, v)
 
+    def game(self, cursor):
+        game_query = "SELECT * FROM games WHERE id = %s;"
+        cursor.execute(game_query, (self.game_id,))
+        record = cursor.fetchone()
+        return db.build_from_record(models.Game, record)
 
     def check_update_revenue_downloads(self, TS_details, conn, cursor):
         if self.revenue < TS_details['humanized_worldwide_last_month_revenue']['revenue']: 
@@ -27,3 +32,13 @@ class Earnings():
             self.update_update_dl = True
         return
 
+    def to_json(self, cursor):
+        earnings_json = self.__dict__
+        game = self.game(cursor)
+        if game:
+            earnings_json['game'] = game.__dict__
+        return earnings_json
+
+    @classmethod
+    def search(self, cursor):
+        return db.find_all(Earnings, cursor)

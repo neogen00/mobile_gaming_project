@@ -61,7 +61,7 @@ class Game():
         if flag: db.update_engine_reldate(self, conn, cursor)
         return
 
-    def to_json(self, cursor):
+    def to_json(self,cursor):
         game_json = self.__dict__
         earnings = self.earnings(cursor)
         if earnings:

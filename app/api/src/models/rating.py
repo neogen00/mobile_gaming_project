@@ -19,3 +19,28 @@ class Rating():
         cursor.execute(rating_query, (game_id, rank_type, ranking, date_created))
         record = cursor.fetchone()
         return db.build_from_record(models.Rating, record)
+
+    def game(self, cursor):
+        game_query = "SELECT * FROM games WHERE id = %s;"
+        cursor.execute(game_query, (self.game_id,))
+        record = cursor.fetchone()
+        return db.build_from_record(models.Game, record)
+
+    def earnings(self, cursor):
+        earnings_query = "SELECT * FROM earnings WHERE game_id = %s;"
+        cursor.execute(earnings_query, (self.game_id,))
+        record = cursor.fetchone()
+        return db.build_from_record(models.Earnings, record)
+
+    def to_json(self, cursor):
+        rating_json = self.__dict__
+        game = self.game(cursor)
+        earnings = self.earnings(cursor)
+        if earnings and game:
+            rating_json['game'] = game.__dict__
+            rating_json['earnings'] = earnings.__dict__
+        return rating_json
+
+    @classmethod
+    def search(self, cursor):
+        return db.find_all(Rating, cursor)    
