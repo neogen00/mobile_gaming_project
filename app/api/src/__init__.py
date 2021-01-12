@@ -26,15 +26,7 @@ def create_app(database='mobilegaming_development', testing = False, debug = Tru
         games = db.find_all(models.Game, cursor)
         game_dicts = [game.__dict__ for game in games]
         return json.dumps(game_dicts, default = str)
-    
-    @app.route('/games/earnings')
-    def search_games_add_earnings():
-        conn = db.get_db()
-        cursor = conn.cursor()
 
-        games = models.Game.search(cursor)
-        game_dicts = [game.to_json(cursor) for game in games]
-        return json.dumps(game_dicts, default = str)
 
     @app.route('/earnings')
     def earnings():
@@ -44,6 +36,15 @@ def create_app(database='mobilegaming_development', testing = False, debug = Tru
         earnings = db.find_all(models.Earnings, cursor)
         earning_dicts = [earning.__dict__ for earning in earnings]
         return json.dumps(earning_dicts, default = str)
+    
+    @app.route('/earnings/games')
+    def search_earnings_add_games():
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        earnings = models.Earnings.search(cursor)
+        earnings_dicts = [earning.to_json(cursor) for earning in earnings]
+        return json.dumps(earnings_dicts, default = str)
 
     @app.route('/ratings')
     def ratings():
@@ -53,5 +54,14 @@ def create_app(database='mobilegaming_development', testing = False, debug = Tru
         ratings = db.find_all(models.Rating, cursor)
         rating_dicts = [rating.__dict__ for rating in ratings]
         return json.dumps(rating_dicts, default = str)
+
+    @app.route('/ratings/all_data')
+    def ratings_with_all_data():
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        ratings = models.Rating.search(cursor)
+        ratings_dicts = [rating.to_json(cursor) for rating in ratings]
+        return json.dumps(ratings_dicts, default = str)
 
     return app
