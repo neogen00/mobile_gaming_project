@@ -106,14 +106,14 @@ def find_or_build_by_name(Class, name, cursor):
 def update_engine_reldate(obj, conn, cursor):
     game_str = f"""UPDATE {obj.__table__} SET game_engine = '{obj.game_engine}', release_date = '{obj.release_date}'
                     WHERE id = {obj.id};"""
-    cursor.execute(game_str, list(values(obj)))
+    cursor.execute(game_str)
     conn.commit()
     return 
 
 def update_genre(obj, conn, cursor):
     game_str = f"""UPDATE {obj.__table__} SET genre = '{obj.genre}'
                     WHERE id = {obj.id};"""
-    cursor.execute(game_str, list(values(obj)))
+    cursor.execute(game_str)
     conn.commit()
     return
 
