@@ -11,7 +11,6 @@ class Builder:
             return {'game': game, 'rating': rating, 'earnings': game.earnings(TS_details, conn, cursor)} 
         else:
             earnings = EarningsBuilder().run(TS_details, game, conn, cursor)
-            print(earnings.__dict__)
             return {'game': game, 'rating': rating, 'earnings': earnings}
 
 class GameBuilder:
