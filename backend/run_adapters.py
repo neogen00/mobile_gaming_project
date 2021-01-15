@@ -1,4 +1,3 @@
-# import datetime
 import psycopg2
 
 import api.src.db as db
