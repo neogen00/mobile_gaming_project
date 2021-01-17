@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS earnings (
   id serial PRIMARY KEY,
   game_id INTEGER,
   price DECIMAL NOT NULL,
-  inapp BOOLEAN NOT NULL,
-  shows_ads BOOLEAN NOT NULL,
+  inapp BOOLEAN,
+  shows_ads BOOLEAN,
   revenue BIGINT,
   downloads BIGINT,
   CONSTRAINT fk_game

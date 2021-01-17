@@ -45,7 +45,7 @@ class EarningsBuilder:
 
     def select_attributes(self, TS_details):
         price, inapp, shows_ads, revenue, downloads = TS_details['price'], TS_details['in_app_purchases'], TS_details['shows_ads'], TS_details['humanized_worldwide_last_month_revenue']['revenue'], TS_details['humanized_worldwide_last_month_downloads']['downloads']
-        return dict(zip(self.attributes, [price, inapp, revenue, downloads]))
+        return dict(zip(self.attributes, [price, inapp, shows_ads, revenue, downloads]))
 
     def run(self, TS_details, game, conn, cursor):
         earnings_attributes = self.select_attributes(TS_details)
