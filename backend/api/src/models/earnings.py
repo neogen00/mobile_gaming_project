@@ -3,7 +3,7 @@ import api.src.models as models
 
 class Earnings():
     __table__ = 'earnings'
-    columns = ['id', 'game_id', 'price', 'inapp',
+    columns = ['id', 'game_id', 'price', 'inapp', 'shows_ads',
             'revenue', 'downloads']
 
     def __init__(self, **kwargs):

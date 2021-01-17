@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS earnings (
   game_id INTEGER,
   price DECIMAL NOT NULL,
   inapp BOOLEAN NOT NULL,
+  shows_ads BOOLEAN NOT NULL,
   revenue BIGINT,
   downloads BIGINT,
   CONSTRAINT fk_game

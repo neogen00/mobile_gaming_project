@@ -41,14 +41,14 @@ no1_ios = db.save(models.Rating(game_id = amongus_ios.id, metacritic = 84, TS_ra
     rank_type = 'top free', ranking = 1, date_created = '2020-12-01'), db.conn, db.cursor)
 
 # seeding earnings
-amongus_e = db.save(models.Earnings(game_id = amongus.id, price = 0.00, inapp = True, 
+amongus_e = db.save(models.Earnings(game_id = amongus.id, price = 0.00, inapp = True, shows_ads = True,
     revenue = 35000000, downloads = 100000), db.conn, db.cursor)
 
-roblox_e = db.save(models.Earnings(game_id = roblox.id, price = 0.01, inapp = False, 
+roblox_e = db.save(models.Earnings(game_id = roblox.id, price = 0.01, inapp = '', shows_ads = True,
     revenue = 50000000, downloads = 200000), db.conn, db.cursor)
 
-candy_e = db.save(models.Earnings(game_id = candy.id, price = 0.50, inapp = True, 
+candy_e = db.save(models.Earnings(game_id = candy.id, price = 0.50, inapp = True, shows_ads = True,
     revenue = 100000000, downloads = 300000), db.conn, db.cursor)
 
-amongus_ios_e = db.save(models.Earnings(game_id = amongus_ios.id, price = 1.00, inapp = False, 
+amongus_ios_e = db.save(models.Earnings(game_id = amongus_ios.id, price = 1.00, inapp = '', shows_ads = '',
     revenue = 2000000, downloads = 75000), db.conn, db.cursor)
