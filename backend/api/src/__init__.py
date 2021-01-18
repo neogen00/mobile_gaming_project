@@ -19,7 +19,7 @@ def create_app(database='mobilegaming_development', testing = False, debug = Tru
         return 'Welcome to the mobile gaming api'
 
     @app.route('/games')
-    def games():
+    def games_all():
         conn = db.get_db()
         cursor = conn.cursor()
 
@@ -27,40 +27,35 @@ def create_app(database='mobilegaming_development', testing = False, debug = Tru
         game_dicts = [game.__dict__ for game in games]
         return json.dumps(game_dicts, default = str)
 
-
-    @app.route('/earnings')
-    def earnings():
+    @app.route('/games/<id>')
+    def game(id):
         conn = db.get_db()
         cursor = conn.cursor()
+        game = db.find(models.Game, id, cursor)
+        return json.dumps(game.__dict__, default = str)
 
-        earnings = db.find_all(models.Earnings, cursor)
-        earning_dicts = [earning.__dict__ for earning in earnings]
-        return json.dumps(earning_dicts, default = str)
-    
-    @app.route('/earnings/games')
-    def search_earnings_add_games():
+    @app.route('/games/earnings/search')
+    def games_search_with_earnings():
         conn = db.get_db()
         cursor = conn.cursor()
-
-        earnings = models.Earnings.search(cursor)
+        params = dict(request.args)
+        earnings = models.Earnings.search(params, cursor)
         earnings_dicts = [earning.to_json(cursor) for earning in earnings]
         return json.dumps(earnings_dicts, default = str)
 
-    @app.route('/ratings')
-    def ratings():
+    @app.route('/games/rating/<id>')
+    def game_with_earnings_ratings(id):
         conn = db.get_db()
         cursor = conn.cursor()
+        ratings = db.find_by_game_id(models.Rating, id, cursor)
+        ratings_dict = [rating.to_json(cursor) for rating in ratings]
+        return json.dumps(ratings_dict, default = str)
 
+    @app.route('/games/all_data')
+    def games_with_earnings_ratings():
+        conn = db.get_db()
+        cursor = conn.cursor()
         ratings = db.find_all(models.Rating, cursor)
-        rating_dicts = [rating.__dict__ for rating in ratings]
-        return json.dumps(rating_dicts, default = str)
-
-    @app.route('/ratings/all_data')
-    def ratings_with_all_data():
-        conn = db.get_db()
-        cursor = conn.cursor()
-
-        ratings = models.Rating.search(cursor)
         ratings_dicts = [rating.to_json(cursor) for rating in ratings]
         return json.dumps(ratings_dicts, default = str)
 

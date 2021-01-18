@@ -44,6 +44,12 @@ def find(Class, id, cursor):
     record = cursor.fetchone()
     return build_from_record(Class, record)
 
+def find_by_game_id(Class, id, cursor):
+    sql_str = f"SELECT * FROM {Class.__table__} WHERE game_id = %s"
+    cursor.execute(sql_str, (id,))
+    records = cursor.fetchall()
+    return build_from_records(Class, records)
+
 def save(obj, conn, cursor):
     s_str = ', '.join(len(values(obj)) * ['%s'])
     venue_str = f"""INSERT INTO {obj.__table__} ({keys(obj)}) VALUES ({s_str});"""

@@ -13,6 +13,8 @@ class Earnings():
         for k, v in kwargs.items():
             if v is '':     #   TS_Client uses '' when false, fix 
                 v = False
+            if k == 'shows_ads':
+                if v == None: v = False
             setattr(self, k, v)
 
     def game(self, cursor):
@@ -40,5 +42,17 @@ class Earnings():
         return earnings_json
 
     @classmethod
-    def search(self, cursor):
-        return db.find_all(Earnings, cursor)
+    def search_clause(self, params):
+        search_tuple = (params['platform'], params['rank_type'])
+        query_str = f"""SELECT e.* FROM earnings AS e JOIN games AS g
+                        ON g.id = e.game_id JOIN ratings AS r ON r.game_id = g.id 
+                        WHERE g.platform = %s AND r.rank_type = %s"""
+        return query_str, search_tuple
+
+    @classmethod
+    def search(self, params, cursor):
+        if not params: return db.find_all(Earnings, cursor)
+        query, search_tuple = self.search_clause(params)
+        cursor.execute(query, search_tuple)
+        records = cursor.fetchall()
+        return db.build_from_records(Earnings, records)

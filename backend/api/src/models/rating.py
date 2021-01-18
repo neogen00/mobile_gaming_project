@@ -40,7 +40,4 @@ class Rating():
             rating_json['game'] = game.__dict__
             rating_json['earnings'] = earnings.__dict__
         return rating_json
-
-    @classmethod
-    def search(self, cursor):
-        return db.find_all(Rating, cursor)    
+  

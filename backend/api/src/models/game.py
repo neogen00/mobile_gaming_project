@@ -60,17 +60,3 @@ class Game():
             if sib.release_date: self.release_date, flag = sib.release_date, True
         if flag: db.update_engine_reldate(self, conn, cursor)
         return
-
-    def to_json(self,cursor):
-        game_json = self.__dict__
-        earnings = self.earnings(cursor)
-        if earnings:
-            earnings_dict = {'price': earnings.price, 'inapp': earnings.inapp, 'revenue': earnings.revenue, 'downloads' : earnings.downloads}
-            game_json['earnings'] = earnings_dict
-        return game_json
-
-    @classmethod
-    def search(self, cursor):
-        return db.find_all(Game, cursor)
-
-
