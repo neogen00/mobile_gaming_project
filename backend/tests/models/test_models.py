@@ -8,7 +8,7 @@ import api.src.models as models
 from  tests.data.builder_data import (s3d_rating, s3d_earnings, s3d_details, s3d_record_date, s3d_rank_type, s3d_input, s3d_lower, s3d_higher, TS_details, amongus_ios)
 
 
-@pytest.fixture() # @pytest.fixture(scope='module') to drop_all_tables after all tests run
+@pytest.fixture()
 def test_conn():
     test_conn = psycopg2.connect(dbname = 'mobilegaming_test', 
             user = 'postgres', password = 'postgres')

@@ -1,6 +1,9 @@
 import datetime
 from decimal import *
 
+from api.src.db import db
+import api.src.models as models
+
 TS_details = {'app_id': 'com.innersloth.spacemafia', 'canonical_country': 'US', 'name': 'Among Us', 
     'publisher_name': 'Innersloth LLC', 'publisher_id': 'Innersloth+LLC', 'humanized_name': 'Among Us', 
     'icon_url': 'https://play-lh.googleusercontent.com/VHB9bVB8cTcnqwnu0nJqKYbiutRclnbGxTpwnayKB4vMxZj8pk1220Rg-6oQ68DwAkqO=s150', 
@@ -46,3 +49,43 @@ s3d_input   = {'name': 'Sushi Roll 3D', 'platform': 'android', 'publisher': 'Say
 s3d_game    = {'id': 4, 'name': 'Sushi Roll 3D', 'platform': 'android', 'publisher': 'SayGames', 'release_date': None, 'genre': 'simulation', 'game_engine': None, 'exists': True}
 s3d_rating  = {'id': 151, 'game_id': 4, 'metacritic': None, 'TS_rating': Decimal('3.99'), 'rank_type': 'top free', 'ranking': 1, 'date_created': datetime.date(2021, 1, 6)}
 s3d_earnings = {'id': 4, 'game_id': 4, 'price': Decimal('0.0'), 'inapp': False, 'shows_ads': True, 'revenue': 1000, 'downloads': 21000000}
+
+def build_records_test_flask(conn, cursor):
+    flask_r1 = {"id": 1, "game_id": 1, "metacritic": 84, "TS_rating": 4.43, "rank_type": "top free", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g1 = {"id": 1, "name": "Among Us", "platform": "android", "publisher": "Innersloth LLC", "release_date": "2018-07-25", "genre": "action", "game_engine": "Unity"}
+    flask_e1 = {"id": 1, "game_id": 1, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 2000000, "downloads": 29000000}
+    flask_r2 = {"id": 2, "game_id": 2, "metacritic": 83, "TS_rating": 4.53, "rank_type": "top paid", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g2 = {"id": 2, "name": "Minecraft", "platform": "android", "publisher": "Mojang", "release_date": "2009-05-10", "genre": "arcade", "game_engine": "Lightweight Java Game Library"} 
+    flask_e2 = {"id": 2, "game_id": 2, "price": 7.49, "inapp": True, "shows_ads": False, "revenue": 4000000, "downloads": 400000} 
+    flask_r3 = {"id": 3, "game_id": 3, "metacritic": None, "TS_rating": 4.42, "rank_type": "top grossing", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g3 = {"id": 3, "name": "Roblox", "platform": "android", "publisher": "Roblox Corporation", "release_date": None, "genre": "adventure", "game_engine": None} 
+    flask_e3 = {"id": 3, "game_id": 3, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 37000000, "downloads": 9000000}
+    flask_r4 = {"id": 4, "game_id": 4, "metacritic": None, "TS_rating": 4.48, "rank_type": "top free", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g4 = {"id": 4, "name": "Among Us!", "platform": "iOS", "publisher": "InnerSloth LLC", "release_date": "2018-07-25", "genre": "action", "game_engine": "Unity"} 
+    flask_e4 = {"id": 4, "game_id": 4, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 6000000, "downloads": 12000000} 
+    flask_r5 = {"id": 5, "game_id": 5, "metacritic": 83, "TS_rating": 4.49, "rank_type": "top paid", "ranking": 1, "date_created": "2021-01-01"} 
+    flask_g5 = {"id": 5, "name": "Minecraft", "platform": "iOS", "publisher": "Mojang", "release_date": "2009-05-10", "genre": "arcade", "game_engine": "Lightweight Java Game Library"} 
+    flask_e5 = {"id": 5, "game_id": 5, "price": 6.99, "inapp": True, "shows_ads": True, "revenue": 10000000, "downloads": 300000} 
+    flask_r6 = {"id": 6, "game_id": 6, "metacritic": None, "TS_rating": 4.60, "rank_type": "top grossing", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g6 = {"id": 6, "name": "Roblox", "platform": "iOS", "publisher": "Roblox Corporation", "release_date": None, "genre": "adventure", "game_engine": None}
+    flask_e6 = {"id": 6, "game_id": 6, "price": 0.0, "inapp": True, "shows_ads": True, "revenue": 60000000, "downloads": 4000000}
+
+
+    db.save(models.Game(**flask_g1), conn, cursor)
+    db.save(models.Game(**flask_g2), conn, cursor)
+    db.save(models.Game(**flask_g3), conn, cursor)
+    db.save(models.Game(**flask_g4), conn, cursor)
+    db.save(models.Game(**flask_g5), conn, cursor)
+    db.save(models.Game(**flask_g6), conn, cursor)
+    db.save(models.Rating(**flask_r1), conn, cursor)
+    db.save(models.Rating(**flask_r2), conn, cursor)
+    db.save(models.Rating(**flask_r3), conn, cursor)
+    db.save(models.Rating(**flask_r4), conn, cursor)
+    db.save(models.Rating(**flask_r5), conn, cursor)
+    db.save(models.Rating(**flask_r6), conn, cursor)
+    db.save(models.Earnings(**flask_e1), conn, cursor)
+    db.save(models.Earnings(**flask_e2), conn, cursor)
+    db.save(models.Earnings(**flask_e3), conn, cursor)
+    db.save(models.Earnings(**flask_e4), conn, cursor)
+    db.save(models.Earnings(**flask_e5), conn, cursor)
+    db.save(models.Earnings(**flask_e6), conn, cursor)
