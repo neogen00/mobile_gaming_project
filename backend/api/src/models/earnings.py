@@ -11,11 +11,9 @@ class Earnings():
             if key not in self.columns:
                 raise f'{key} not in {self.columns}' 
         for k, v in kwargs.items():
-            if v is '':     #   TS_Client uses '' when false, fix 
-                v = False
-            if k == 'shows_ads':
-                if v == None: v = False
+            k, v = db.TS_API_null_fix(k,v)
             setattr(self, k, v)
+
 
     def game(self, cursor):
         game_query = "SELECT * FROM games WHERE id = %s;"
@@ -25,13 +23,11 @@ class Earnings():
 
     def check_update_revenue_downloads(self, TS_details, conn, cursor):
         if self.revenue < TS_details['humanized_worldwide_last_month_revenue']['revenue']: 
-            self.revenue = TS_details['humanized_worldwide_last_month_revenue']['revenue']
+            self.revenue, self.update_rev = TS_details['humanized_worldwide_last_month_revenue']['revenue'], True
             db.update_revenue(self, conn, cursor)
-            self.update_rev = True
         if self.downloads < TS_details['humanized_worldwide_last_month_downloads']['downloads']: 
-            self.downloads = TS_details['humanized_worldwide_last_month_downloads']['downloads']
+            self.downloads, self.update_update_dl = TS_details['humanized_worldwide_last_month_downloads']['downloads'], True
             db.update_downloads(self, conn, cursor)
-            self.update_update_dl = True
         return
 
     def to_json(self, cursor):

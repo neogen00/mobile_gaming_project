@@ -28,3 +28,9 @@ def date_adding_formatter(date_str='2021-1-1', days=3):
     date_temp = datetime.datetime.strptime(date_str, '%Y-%m-%d') + datetime.timedelta(days)
     date_new = date_temp.strftime('%F').replace('-0','-')
     return date_new
+
+def TS_API_null_fix(k,v):
+    if v is '': v = False   # TowerSensor_API uses '' when false, fix        
+    if k == 'shows_ads':
+        if v == None: v = False # TowerSensor_API uses null when false, fix
+    return k, v
