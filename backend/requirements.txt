@@ -1,0 +1,9 @@
+flask
+pandas
+plotly
+psycopg2-binary
+pytest
+requests
+simplejson
+streamlit
+unidecode
