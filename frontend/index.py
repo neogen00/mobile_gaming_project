@@ -1,19 +1,16 @@
-"""
-Using Streamlit as front end
-"""
-
-import streamlit as st
-import requests
-import plotly.graph_objects as go
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+import requests
+import streamlit as st
 
-API_URL_earnings = "http://127.0.0.1:5000/earnings"
+
+# API_URL_earnings = "http://127.0.0.1:5000/earnings"
 API_URL_games = "http://127.0.0.1:5000/games"
-API_URL_earnings_games = "http://127.0.0.1:5000/earnings/games"
-API_URL_ratings = "http://127.0.0.1:5000/ratings"
-API_URL_ratings_all = "http://127.0.0.1:5000/ratings/all_data"
+API_URL_earnings_games = "http://127.0.0.1:5000/games/earnings"
+# API_URL_ratings = "http://127.0.0.1:5000/ratings"
+API_URL_ratings_all = "http://127.0.0.1:5000/games/all_data"
 
 def get_games():
     response = requests.get(API_URL_games)
@@ -44,11 +41,7 @@ st.header("Gaming the mobile gaming industry with metrics and stats")
 st.write("Different app stores i.e. (Google Play, App Store, etc.) each have their top app lists for users to see which game is trending.")
 st.write("Below is a chart containing revenue and download info for the top 10 of each list:")
 
-earnings = get_earnings()
-games_list = get_games()
 
-def game_name(games_list):
-    return [game['name'] for game in games_list]
 
 ratings_all = get_ratings_all()
 
@@ -97,6 +90,11 @@ fig_r = px.scatter(ra_search,x='downloads',y='revenue',hover_name='name',
 st.plotly_chart(fig_r)
 
 
+games_list = get_games()
+
+def game_name(games_list):
+    return [game['name'] for game in games_list]
+
 st.write("Want to compare how two games do on the rankings? type/select each game (note: the sidebar filters are also attached to the ranking chart)")
 
 games_collection = game_name(games_list)
@@ -121,27 +119,29 @@ st.write("Another finding in genre analysis: the adventure category has the top 
 st.write("High counts in downloads does not guarantee high revenue, but it does give good exposure to be added on the top free list.")
 st.write("Feel free to explore and see what other insights this data shows and hopefully you can make decisions in your next game dev!")
 
-game_earnings = get_earnings_games()
-ge_df = pd.DataFrame(game_earnings)
-dF = ge_df.drop('game',1).assign(**ge_df.game.apply(pd.Series))
+# earnings = get_earnings()
+
+# game_earnings = get_earnings_games()
+# ge_df = pd.DataFrame(game_earnings)
+# dF = ge_df.drop('game',1).assign(**ge_df.game.apply(pd.Series))
 
 
-fig = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
-  color='inapp',template='plotly_white',
-  title="Game revenue vs downloads with in app purchases info")
+# fig = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
+#   color='inapp',template='plotly_white',
+#   title="Game revenue vs downloads with in app purchases info")
 
-st.plotly_chart(fig)
+# st.plotly_chart(fig)
 
-fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
-  color='price',template='plotly_white',
-  title="Game revenue vs downloads with price info")
-st.plotly_chart(fig_b)
+# fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
+#   color='price',template='plotly_white',
+#   title="Game revenue vs downloads with price info")
+# st.plotly_chart(fig_b)
 
-dF['RPD'] = dF['revenue'] / dF['downloads']
-dF = dF[dF['RPD']  > 1 ]
-dF = dF.sort_values(by='RPD', ascending=False)
+# dF['RPD'] = dF['revenue'] / dF['downloads']
+# dF = dF[dF['RPD']  > 1 ]
+# dF = dF.sort_values(by='RPD', ascending=False)
 
-fig3 = px.bar(dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
-st.plotly_chart(fig3)
+# fig3 = px.bar(dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
+# st.plotly_chart(fig3)
 
 st.write("Thanks to TowerSenor, IGDB, and RAWG for all the data used in this project!")
