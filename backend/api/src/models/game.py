@@ -48,15 +48,17 @@ class Game():
         if not sib: return
         if self.platform == 'iOS':
             self.genre = sib.genre
-            db.update_genre(self, conn, cursor)
+            db.update_column(self, 'genre', conn, cursor)
         self.check_update_game_engine_reldate(sib, conn, cursor)
         return
         
     def check_update_game_engine_reldate(self, sib, conn, cursor):
-        flag = False
         if not self.game_engine: 
-            if sib.game_engine: self.game_engine, flag = sib.game_engine, True
+            if sib.game_engine:
+                self.game_engine = sib.game_engine
+                db.update_column(self, 'game_engine', conn, cursor)
         if not self.release_date: 
-            if sib.release_date: self.release_date, flag = sib.release_date, True
-        if flag: db.update_engine_reldate(self, conn, cursor)
+            if sib.release_date: 
+                self.release_date = sib.release_date
+                db.update_column(self, 'release_date', conn, cursor)
         return

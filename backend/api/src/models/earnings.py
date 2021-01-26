@@ -24,10 +24,10 @@ class Earnings():
     def check_update_revenue_downloads(self, TS_details, conn, cursor):
         if self.revenue < TS_details['humanized_worldwide_last_month_revenue']['revenue']: 
             self.revenue, self.update_rev = TS_details['humanized_worldwide_last_month_revenue']['revenue'], True
-            db.update_revenue(self, conn, cursor)
+            db.update_column(self, 'revenue', conn, cursor)
         if self.downloads < TS_details['humanized_worldwide_last_month_downloads']['downloads']: 
             self.downloads, self.update_update_dl = TS_details['humanized_worldwide_last_month_downloads']['downloads'], True
-            db.update_downloads(self, conn, cursor)
+            db.update_column(self, 'downloads', conn, cursor)
         return
 
     def to_json(self, cursor):

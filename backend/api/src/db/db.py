@@ -52,20 +52,20 @@ def find_by_game_id(Class, id, cursor):
 
 def save(obj, conn, cursor):
     s_str = ', '.join(len(values(obj)) * ['%s'])
-    venue_str = f"""INSERT INTO {obj.__table__} ({keys(obj)}) VALUES ({s_str});"""
-    cursor.execute(venue_str, list(values(obj)))
+    game_str = f"""INSERT INTO {obj.__table__} ({keys(obj)}) VALUES ({s_str});"""
+    cursor.execute(game_str, list(values(obj)))
     conn.commit()
     cursor.execute(f'SELECT * FROM {obj.__table__} ORDER BY id DESC LIMIT 1')
     record = cursor.fetchone()
     return build_from_record(type(obj), record)
 
 def values(obj):
-    venue_attrs = obj.__dict__
-    return [venue_attrs[attr] for attr in obj.columns if attr in venue_attrs.keys()]
+    game_attrs = obj.__dict__
+    return [game_attrs[attr] for attr in obj.columns if attr in game_attrs.keys()]
 
 def keys(obj):
-    venue_attrs = obj.__dict__
-    selected = [attr for attr in obj.columns if attr in venue_attrs.keys()]
+    game_attrs = obj.__dict__
+    selected = [attr for attr in obj.columns if attr in game_attrs.keys()]
     return ', '.join(selected)
 
 def reset_all_primarykey(conn, cursor):
@@ -109,30 +109,10 @@ def find_or_build_by_name(Class, name, cursor):
         obj.name = name
     return obj
 
-def update_engine_reldate(obj, conn, cursor):
-    game_str = f"""UPDATE {obj.__table__} SET game_engine = '{obj.game_engine}', release_date = '{obj.release_date}'
+def update_column(obj, column, conn, cursor):
+    obj_dict = obj.__dict__
+    update_str = f"""UPDATE {obj.__table__} SET {column} = '{obj_dict.get(column,[])}'
                     WHERE id = {obj.id};"""
-    cursor.execute(game_str)
-    conn.commit()
-    return 
-
-def update_genre(obj, conn, cursor):
-    game_str = f"""UPDATE {obj.__table__} SET genre = '{obj.genre}'
-                    WHERE id = {obj.id};"""
-    cursor.execute(game_str)
-    conn.commit()
-    return
-
-def update_revenue(obj, conn, cursor):
-    earnings_str = f"""UPDATE earnings SET revenue = '{obj.revenue}'
-                    WHERE id = {obj.id};"""
-    cursor.execute(earnings_str)
-    conn.commit()
-    return
-
-def update_downloads(obj, conn, cursor):
-    earnings_str = f"""UPDATE earnings SET downloads = '{obj.downloads}'
-                    WHERE id = {obj.id};"""
-    cursor.execute(earnings_str)
+    cursor.execute(update_str)
     conn.commit()
     return
