@@ -50,7 +50,7 @@ s3d_game    = {'id': 4, 'name': 'Sushi Roll 3D', 'platform': 'android', 'publish
 s3d_rating  = {'id': 151, 'game_id': 4, 'metacritic': None, 'TS_rating': Decimal('3.99'), 'rank_type': 'top free', 'ranking': 1, 'date_created': datetime.date(2021, 1, 6)}
 s3d_earnings = {'id': 4, 'game_id': 4, 'price': Decimal('0.0'), 'inapp': False, 'shows_ads': True, 'revenue': 1000, 'downloads': 21000000}
 
-def build_records_test_flask(conn, cursor):
+def build_records_testing(conn, cursor):
     flask_r1 = {"id": 1, "game_id": 1, "metacritic": 84, "TS_rating": 4.43, "rank_type": "top free", "ranking": 1, "date_created": "2021-01-01"}
     flask_g1 = {"id": 1, "name": "Among Us", "platform": "android", "publisher": "Innersloth LLC", "release_date": "2018-07-25", "genre": "action", "game_engine": "Unity"}
     flask_e1 = {"id": 1, "game_id": 1, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 2000000, "downloads": 29000000}

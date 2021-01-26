@@ -4,7 +4,7 @@ import pytest
 from api.src import create_app
 from api.src.db import db
 import api.src.models as models
-from tests.data.builder_data import build_records_test_flask
+from tests.data.builder_data import build_records_testing
 
 
 @pytest.fixture(scope = 'module')
@@ -32,7 +32,7 @@ def app():
 
 
 def build_records(conn, cursor):
-    build_records_test_flask(conn, cursor)
+    build_records_testing(conn, cursor)
 
 
 @pytest.fixture
