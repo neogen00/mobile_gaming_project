@@ -6,34 +6,28 @@ import requests
 import streamlit as st
 
 
-# API_URL_earnings = "http://127.0.0.1:5000/earnings"
 API_URL_games = "http://127.0.0.1:5000/games"
-API_URL_earnings_games = "http://127.0.0.1:5000/games/earnings"
-# API_URL_ratings = "http://127.0.0.1:5000/ratings"
+API_URL_earnings_search = "http://127.0.0.1:5000/games/earnings/search"
+API_URL_RPD = "http://127.0.0.1:5000/games/earnings/RPD"
 API_URL_ratings_all = "http://127.0.0.1:5000/games/all_data"
+
 
 def get_games():
     response = requests.get(API_URL_games)
     return response.json()
-def get_earnings():
-    response = requests.get(API_URL_earnings)
-    return response.json()
+
 def get_earnings_games():
-    response = requests.get(API_URL_earnings_games)
+    response = requests.get(API_URL_earnings_search)
     return response.json()
-def get_ratings():
-    response = requests.get(API_URL_ratings)
+
+def get_RPD():
+    response = requests.get(API_URL_RPD)
     return response.json()
+
 def get_ratings_all():
     response = requests.get(API_URL_ratings_all)
     return response.json()
 
-
-def game_revenue(earnings):
-    return [earning['revenue'] for earning in earnings]
-
-def game_downloads(downloads):
-    return [download['downloads'] for download in downloads]
 
 st.title("Mobile Gaming Analytics")
 st.write("By Christopher Santos")
@@ -42,26 +36,12 @@ st.write("Different app stores i.e. (Google Play, App Store, etc.) each have the
 st.write("Below is a chart containing revenue and download info for the top 10 of each list:")
 
 
-
 ratings_all = get_ratings_all()
+ratings_df = pd.DataFrame(ratings_all)
+ratings_df = ratings_df.drop('game',1).assign(**ratings_df.game.apply(pd.Series))
+ratings_df = ratings_df.drop('earnings',1).assign(**ratings_df.earnings.apply(pd.Series))
 
-def rating_name(ratings_all):
-    return [rating['game']['name'] for rating in ratings_all]
-def rating_os(ratings_all):
-    return [rating['game']['platform'] for rating in ratings_all]
-def rating_downloads(ratings_all):
-    return [rating['earnings']['downloads'] for rating in ratings_all]
-def rating_revenue(ratings_all):
-    return [rating['earnings']['revenue'] for rating in ratings_all]
-def rating_genre(ratings_all):
-    return [rating['game']['genre'] for rating in ratings_all]
-
-
-ra_df = pd.DataFrame(ratings_all)
-ra1_df = ra_df.drop('game',1).assign(**ra_df.game.apply(pd.Series))
-ra2_df = ra1_df.drop('earnings',1).assign(**ra1_df.earnings.apply(pd.Series))
-
-fig_all = px.scatter(ra2_df,x='downloads',y='revenue',
+fig_all = px.scatter(ratings_df,x='downloads',y='revenue',
     hover_name='name',hover_data=['platform', 'publisher'],
   color='genre', template='plotly_dark',
   title="All game revenue vs downloads with genre colormap")
@@ -81,8 +61,7 @@ with left_column:
         ('android', 'iOS')
     )
 
-
-ra_search = ra2_df.loc[(ra2_df['rank_type']==rank_type) & (ra2_df['platform']==os_type)]
+ra_search = ratings_df.loc[(ratings_df['rank_type']==rank_type) & (ratings_df['platform']==os_type)]
 fig_r = px.scatter(ra_search,x='downloads',y='revenue',hover_name='name',
         hover_data=['platform', 'publisher'],
         color='genre', template='plotly_dark',
@@ -100,12 +79,12 @@ st.write("Want to compare how two games do on the rankings? type/select each gam
 games_collection = game_name(games_list)
 game_search1 = st.selectbox("game1", games_collection) 
 game_search2 = st.selectbox("game2", games_collection)
-ra_game1 = ra2_df.loc[(ra2_df['name']==game_search1) & (ra2_df['rank_type']==rank_type)]
-ra_game2 = ra_search.loc[(ra2_df['name']==game_search1) | (ra2_df['name']==game_search2)]
-ra_game2 = ra_game2.sort_values(by='date_created')
+
+top_10_rank = ra_search.loc[(ra_search['name']==game_search1) | (ra_search['name']==game_search2)]
+top_10_rank = top_10_rank.sort_values(by='date_created')
 
 try:
-    fig_rankings = px.line(ra_game2, x='date_created', y='ranking', 
+    fig_rankings = px.line(top_10_rank, x='date_created', y='ranking', 
         color='name', template='plotly_white', 
         title='Ranking by date')
     fig_rankings.update_yaxes(autorange="reversed")
@@ -119,29 +98,29 @@ st.write("Another finding in genre analysis: the adventure category has the top 
 st.write("High counts in downloads does not guarantee high revenue, but it does give good exposure to be added on the top free list.")
 st.write("Feel free to explore and see what other insights this data shows and hopefully you can make decisions in your next game dev!")
 
-# earnings = get_earnings()
 
-# game_earnings = get_earnings_games()
-# ge_df = pd.DataFrame(game_earnings)
-# dF = ge_df.drop('game',1).assign(**ge_df.game.apply(pd.Series))
+game_earnings = get_earnings_games()
+ge_df = pd.DataFrame(game_earnings)
+dF = ge_df.drop('game',1).assign(**ge_df.game.apply(pd.Series))
 
 
-# fig = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
-#   color='inapp',template='plotly_white',
-#   title="Game revenue vs downloads with in app purchases info")
+fig = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
+  hover_data=['inapp','platform', 'publisher'],
+  color='shows_ads',template='plotly_white',
+  title="Game revenue vs downloads with showing ads data")
 
-# st.plotly_chart(fig)
+st.plotly_chart(fig)
 
-# fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
-#   color='price',template='plotly_white',
-#   title="Game revenue vs downloads with price info")
-# st.plotly_chart(fig_b)
+fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
+  color='price',template='plotly_white',
+  title="Game revenue vs downloads with price info")
+st.plotly_chart(fig_b)
 
-# dF['RPD'] = dF['revenue'] / dF['downloads']
-# dF = dF[dF['RPD']  > 1 ]
-# dF = dF.sort_values(by='RPD', ascending=False)
+dF['RPD'] = dF['revenue'] / dF['downloads']
+dF = dF[dF['RPD']  > 1 ]
+dF = dF.sort_values(by='RPD', ascending=False)
 
-# fig3 = px.bar(dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
-# st.plotly_chart(fig3)
+fig3 = px.bar(dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
+st.plotly_chart(fig3)
 
 st.write("Thanks to TowerSenor, IGDB, and RAWG for all the data used in this project!")
