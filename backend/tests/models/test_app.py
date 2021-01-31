@@ -70,6 +70,13 @@ def test_games_earnings_search(app, client):
     assert json_response[0]['game']['name'] == 'Minecraft'
     assert json_response[0]['game']['platform'] == 'iOS'
 
+def test_games_earnings_RPD(app, client):
+    response = client.get('/games/earnings/RPD')
+    json_response = json.loads(response.data)
+
+    assert json_response[0]['name'] == 'Among Us'
+    assert json_response[0]['RPD']['RPD'] == 0.07
+
 def test_games_rating_id(app, client):
     response = client.get('/games/rating/4')
     json_response = json.loads(response.data)

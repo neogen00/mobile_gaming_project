@@ -62,3 +62,19 @@ class Game():
                 self.release_date = sib.release_date
                 db.update_column(self, 'release_date', conn, cursor)
         return
+    
+    def revenue_per_downloads(self, cursor):
+        rpd_columns = ['revenue', 'downloads', 'RPD', 'inapp', 'shows_ads']
+        query_str =  """SELECT e.revenue, e.downloads, 
+                        ROUND(e.revenue::NUMERIC/e.downloads, 2) AS RPD,
+                        e.inapp, e.shows_ads FROM earnings AS e 
+                        WHERE e.game_id = %s"""
+        cursor.execute(query_str, (self.id,))
+        record = cursor.fetchone()
+        record_dict = dict(zip(rpd_columns, record))
+        return record_dict
+    
+    def to_json(self, cursor):
+        game_json = self.__dict__
+        game_json['RPD'] = self.revenue_per_downloads(cursor)
+        return game_json
