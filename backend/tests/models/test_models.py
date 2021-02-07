@@ -5,7 +5,8 @@ import pytest
 import api.src.adapters as adapters
 import api.src.db as db
 import api.src.models as models
-from  tests.data.builder_data import (s3d_rating, s3d_earnings, s3d_details, s3d_record_date, s3d_rank_type, s3d_input, s3d_lower, s3d_higher, TS_details, amongus_ios)
+from  tests.data.builder_data import (s3d_rating, s3d_earnings, s3d_details, s3d_record_date, 
+    s3d_rank_type, s3d_input, s3d_lower, s3d_higher, TS_details, amongus_ios, build_records_testing_models)
 
 
 @pytest.fixture()
@@ -40,6 +41,41 @@ def test_Earnings_object_attributes():
     assert s3d_e.revenue == 1000 
     assert s3d_e.downloads == 21000000 
 
+def test_Game_find_by_game_name_platform(test_conn):
+    test_cursor = test_conn.cursor()
+    build_records_testing_models(test_conn, test_cursor)
+    amongus_i = models.Game.find_by_game_name_platform('Among Us!', 'iOS', test_cursor)
+
+    assert amongus_i.name == 'Among Us!' 
+    assert amongus_i.platform == 'iOS' 
+    assert amongus_i.genre == '[6014,7001,7015]'
+    assert amongus_i.release_date == None
+    assert amongus_i.game_engine == None
+
+def test_Game_get_sibling(test_conn):
+    test_cursor = test_conn.cursor()
+    build_records_testing_models(test_conn, test_cursor)
+    amongus_i = models.Game.find_by_game_name_platform('Among Us!', 'iOS', test_cursor)
+    amongus_a = amongus_i.get_sibling(amongus_i.name, amongus_i.platform, test_cursor)
+
+    assert amongus_i.platform == 'iOS'
+    assert amongus_a.platform == 'android'
+    assert amongus_a.genre == 'action'
+    assert amongus_a.release_date == datetime.date(2018, 7, 25)    
+
+def test_Game_try_sibling_params_if_None(test_conn):
+    test_cursor = test_conn.cursor()
+    build_records_testing_models(test_conn, test_cursor)
+    amongus_i = models.Game.find_by_game_name_platform('Among Us!', 'iOS', test_cursor)
+
+    assert amongus_i.release_date == None
+    assert amongus_i.game_engine == None
+
+    amongus_i.try_sibling_params_if_None(test_conn, test_cursor)
+    amongus_i_new = models.Game.find_by_game_name_platform('Among Us!', 'iOS', test_cursor)
+    assert amongus_i_new.release_date == datetime.date(2018, 7, 25)
+    assert amongus_i_new.game_engine == 'Unity' 
+
 def test_update_revenue_downloads_equal_lower_value_no_update(test_conn):
     test_cursor = test_conn.cursor()
     builder = adapters.Builder()
@@ -60,7 +96,7 @@ def test_update_revenue_downloads_bigger_value_update(test_conn):
     assert same_earnings.revenue == 2000
     assert same_earnings.downloads == 22000000
 
-def test_try_sibling_params_if_None_update(test_conn):
+def test_integrated_try_sibling_params_if_None_update(test_conn):
     test_cursor = test_conn.cursor()
     builder = adapters.Builder()
     amongus_ios_objs_1st = builder.run(amongus_ios, '2020-12-20', 'top free', test_conn, test_cursor)

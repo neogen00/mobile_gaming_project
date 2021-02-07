@@ -89,3 +89,18 @@ def build_records_testing(conn, cursor):
     db.save(models.Earnings(**flask_e4), conn, cursor)
     db.save(models.Earnings(**flask_e5), conn, cursor)
     db.save(models.Earnings(**flask_e6), conn, cursor)
+
+def build_records_testing_models(conn, cursor):
+    flask_r1 = {"id": 1, "game_id": 1, "metacritic": 84, "TS_rating": 4.43, "rank_type": "top free", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g1 = {"id": 1, "name": "Among Us", "platform": "android", "publisher": "Innersloth LLC", "release_date": "2018-07-25", "genre": "action", "game_engine": "Unity"}
+    flask_e1 = {"id": 1, "game_id": 1, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 2000000, "downloads": 29000000}
+    flask_r2 = {"id": 2, "game_id": 2, "metacritic": None, "TS_rating": 4.48, "rank_type": "top free", "ranking": 1, "date_created": "2021-01-01"}
+    flask_g2 = {"id": 2, "name": "Among Us!", "platform": "iOS", "publisher": "InnerSloth LLC", "release_date": None, "genre": "[6014,7001,7015]", "game_engine": None} 
+    flask_e2 = {"id": 2, "game_id": 2, "price": 0.0, "inapp": True, "shows_ads": False, "revenue": 6000000, "downloads": 12000000} 
+
+    db.save(models.Game(**flask_g1), conn, cursor)
+    db.save(models.Game(**flask_g2), conn, cursor)
+    db.save(models.Rating(**flask_r1), conn, cursor)
+    db.save(models.Rating(**flask_r2), conn, cursor)
+    db.save(models.Earnings(**flask_e1), conn, cursor)
+    db.save(models.Earnings(**flask_e2), conn, cursor)

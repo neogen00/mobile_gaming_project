@@ -116,11 +116,14 @@ fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
   title="Game revenue vs downloads with price info")
 st.plotly_chart(fig_b)
 
-dF['RPD'] = dF['revenue'] / dF['downloads']
-dF = dF[dF['RPD']  > 1 ]
-dF = dF.sort_values(by='RPD', ascending=False)
+# RPD analysis
 
-fig3 = px.bar(dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
+rpd_dF = pd.DataFrame(get_RPD())
+rpd_dF = rpd_dF.drop('RPD',1).assign(**rpd_dF.RPD.apply(pd.Series))
+rpd_dF = rpd_dF[rpd_dF['RPD']  > 1 ]
+rpd_dF = rpd_dF.sort_values(by='RPD', ascending=False)
+
+fig3 = px.bar(rpd_dF,x='name',y='RPD',template='plotly_white',title='Revenue Per Download')
 st.plotly_chart(fig3)
 
 st.write("Thanks to TowerSenor, IGDB, and RAWG for all the data used in this project!")
