@@ -4,14 +4,19 @@ from flask import request
 
 import api.src.models as models
 import api.src.db as db
+from settings import DB_USER, DB_NAME, DB_HOST, DB_PASSWORD, DEBUG, TESTING
 
-def create_app(database='mobilegaming_development', testing = False, debug = True):
+# def create_app(database='mobilegaming_development', testing = False, debug = True):
+def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
     app.config.from_mapping(
-        DATABASE=database,
-        DEBUG = debug,
-        TESTING = testing
+        DB_USER = DB_USER,
+        DB_PASSWORD = DB_PASSWORD,
+        DATABASE= DB_NAME,
+        DB_HOST = DB_HOST,
+        DEBUG = DEBUG,
+        TESTING = TESTING
     )
 
     @app.route('/')
