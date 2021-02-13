@@ -3,6 +3,7 @@ pandas
 plotly
 psycopg2-binary
 pytest
+python-dotenv
 requests
 simplejson
 streamlit
