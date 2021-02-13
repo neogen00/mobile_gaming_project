@@ -1,5 +1,5 @@
 import pdb
-import api.src.adapters as adapters
+import src.adapters as adapters
 
 
 def test_find_game_engine_hit():

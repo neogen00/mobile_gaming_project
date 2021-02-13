@@ -1,8 +1,8 @@
 import datetime
 from decimal import *
 
-from api.src.db import db
-import api.src.models as models
+from src.db import db
+import src.models as models
 
 TS_details = {'app_id': 'com.innersloth.spacemafia', 'canonical_country': 'US', 'name': 'Among Us', 
     'publisher_name': 'Innersloth LLC', 'publisher_id': 'Innersloth+LLC', 'humanized_name': 'Among Us', 

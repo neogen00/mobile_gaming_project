@@ -2,7 +2,7 @@ import pytest
 import string
 import unidecode
 
-from api.src.db.string_utils import (isUnicode, encode_utf8, filter_name, strip_last_specialchar, date_adding_formatter)
+from src.db.string_utils import (isUnicode, encode_utf8, filter_name, strip_last_specialchar, date_adding_formatter)
 
 
 BingoBlitz_name_error = 'Bingo Blitz️'

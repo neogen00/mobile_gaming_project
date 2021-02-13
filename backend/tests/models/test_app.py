@@ -1,15 +1,21 @@
 from flask import json
 import pytest
 
-from api.src import create_app
-from api.src.db import db
-import api.src.models as models
+from src import create_app
+from src.db import db
+import src.models as models
+from settings import (DBTEST_USER, DBTEST_NAME, DBTEST_PASSWORD)
 from tests.data.builder_data import build_records_testing
 
 
 @pytest.fixture(scope = 'module')
 def app():
-    flask_app = create_app('mobilegaming_test', testing = True, debug = True)
+    flask_app = create_app()
+    flask_app.config['DATABASE'] = DBTEST_NAME
+    flask_app.config['DB_USER'] = DBTEST_USER
+    flask_app.config['DB_PASSWORD'] = DBTEST_PASSWORD
+    flask_app.config['TESTING'] = True
+    flask_app.config['DEBUG'] = True
 
     with flask_app.app_context():
         conn = db.get_db()

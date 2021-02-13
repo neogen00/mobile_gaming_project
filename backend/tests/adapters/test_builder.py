@@ -3,16 +3,17 @@ from decimal import *
 import psycopg2
 import pytest
 
-import api.src.db.db as db
-import api.src.models as models
-import api.src.adapters as adapters
+import src.db.db as db
+import src.models as models
+import src.adapters as adapters
+from settings import (DBTEST_USER, DBTEST_NAME, DBTEST_PASSWORD)
 from tests.data.builder_data import (TS_details, search_date, rank_type)
 
 
 @pytest.fixture()
 def test_conn():
-    test_conn = psycopg2.connect(dbname = 'mobilegaming_test', 
-            user = 'postgres', password = 'postgres')
+    test_conn = psycopg2.connect(dbname = DBTEST_NAME, 
+            user = DBTEST_USER, password = DBTEST_PASSWORD)
     cursor = test_conn.cursor()
     db.drop_all_tables(test_conn, cursor)
     db.reset_all_primarykey(test_conn, cursor)

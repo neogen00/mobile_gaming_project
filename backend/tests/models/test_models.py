@@ -2,17 +2,18 @@ import datetime
 import psycopg2
 import pytest
 
-import api.src.adapters as adapters
-import api.src.db as db
-import api.src.models as models
+import src.adapters as adapters
+import src.db as db
+import src.models as models
+from settings import (DBTEST_USER, DBTEST_NAME, DBTEST_PASSWORD)
 from  tests.data.builder_data import (s3d_rating, s3d_earnings, s3d_details, s3d_record_date, 
     s3d_rank_type, s3d_input, s3d_lower, s3d_higher, TS_details, amongus_ios, build_records_testing_models)
 
 
 @pytest.fixture()
 def test_conn():
-    test_conn = psycopg2.connect(dbname = 'mobilegaming_test', 
-            user = 'postgres', password = 'postgres')
+    test_conn = psycopg2.connect(dbname = DBTEST_NAME, 
+            user = DBTEST_USER, password = DBTEST_PASSWORD)
     cursor = test_conn.cursor()
     db.drop_all_tables(test_conn, cursor)
     db.reset_all_primarykey(test_conn, cursor)
