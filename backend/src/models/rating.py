@@ -17,19 +17,19 @@ class Rating():
     def find_by(self, game_id, rank_type, ranking, date_created, cursor):
         rating_query = "SELECT * FROM ratings WHERE game_id = %s AND rank_type = %s AND ranking = %s AND date_created = %s;"
         cursor.execute(rating_query, (game_id, rank_type, ranking, date_created))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Rating, record)
 
     def game(self, cursor):
         game_query = "SELECT * FROM games WHERE id = %s;"
         cursor.execute(game_query, (self.game_id,))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Game, record)
 
     def earnings(self, cursor):
         earnings_query = "SELECT * FROM earnings WHERE game_id = %s;"
         cursor.execute(earnings_query, (self.game_id,))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Earnings, record)
 
     def to_json(self, cursor):
@@ -38,6 +38,6 @@ class Rating():
         earnings = self.earnings(cursor)
         if earnings and game:
             rating_json['game'] = game.__dict__
-            rating_json['earnings'] = earnings.__dict__
+            rating_json['earnings'] = earnings.__dict__        
         return rating_json
   

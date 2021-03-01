@@ -14,27 +14,28 @@ class Earnings():
             k, v = db.TS_API_null_fix(k,v)
             setattr(self, k, v)
 
-
     def game(self, cursor):
         game_query = "SELECT * FROM games WHERE id = %s;"
         cursor.execute(game_query, (self.game_id,))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Game, record)
 
     def check_update_revenue_downloads(self, TS_details, conn, cursor):
-        if self.revenue < TS_details['humanized_worldwide_last_month_revenue']['revenue']: 
-            self.revenue, self.update_rev = TS_details['humanized_worldwide_last_month_revenue']['revenue'], True
+        current_revenue = TS_details['humanized_worldwide_last_month_revenue']['revenue']
+        current_downloads = TS_details['humanized_worldwide_last_month_downloads']['downloads']
+        
+        if self.revenue < current_revenue: 
+            self.revenue, self.update_rev = current_revenue, True
             db.update_column(self, 'revenue', conn, cursor)
-        if self.downloads < TS_details['humanized_worldwide_last_month_downloads']['downloads']: 
-            self.downloads, self.update_update_dl = TS_details['humanized_worldwide_last_month_downloads']['downloads'], True
+        if self.downloads < current_downloads: 
+            self.downloads, self.update_update_dl = current_downloads, True
             db.update_column(self, 'downloads', conn, cursor)
-        return
 
     def to_json(self, cursor):
         earnings_json = self.__dict__
         game = self.game(cursor)
         if game:
-            earnings_json['game'] = game.__dict__
+            earnings_json['game'] = game.__dict__        
         return earnings_json
 
     @classmethod
@@ -42,7 +43,7 @@ class Earnings():
         search_tuple = (params['platform'], params['rank_type'])
         query_str = f"""SELECT e.* FROM earnings AS e JOIN games AS g
                         ON g.id = e.game_id JOIN ratings AS r ON r.game_id = g.id 
-                        WHERE g.platform = %s AND r.rank_type = %s"""
+                        WHERE g.platform = %s AND r.rank_type = %s"""        
         return query_str, search_tuple
 
     @classmethod

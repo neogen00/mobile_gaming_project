@@ -17,13 +17,13 @@ class Game():
     def find_by_game_name_platform(self, name, platform, cursor):
         game_query = "SELECT * FROM games WHERE name = %s AND platform = %s;"
         cursor.execute(game_query, (name, platform))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Game, record)
 
     def ratings(self, cursor):
         ratings_query = "SELECT * FROM ratings WHERE ratings.game_id = %s;"
         cursor.execute(ratings_query, (self.id,))
-        record = cursor.fetchone()
+        record = cursor.fetchone()        
         return db.build_from_record(models.Rating, record)
 
     def earnings(self, TS_details, conn, cursor):
@@ -31,15 +31,15 @@ class Game():
         cursor.execute(earnings_query, (self.id,))
         record = cursor.fetchone()
         earnings = db.build_from_record(models.Earnings, record)
-        earnings.check_update_revenue_downloads(TS_details, conn, cursor)
+        earnings.check_update_revenue_downloads(TS_details, conn, cursor)        
         return earnings
     
     def get_sibling(self, name, os, cursor):
         new_name = db.strip_last_specialchar(name)
         os_bar = {'android':'iOS', 'iOS':'android'}
-        query = "SELECT * FROM %s WHERE platform = '%s' AND name LIKE '%s%%';" % (self.__table__,os_bar[os],new_name)
-        cursor.execute(query)
-        record = cursor.fetchone()
+        query = "SELECT * FROM games WHERE platform = %s AND name LIKE %s"
+        cursor.execute(query, (os_bar[os],f"{new_name}%%"))
+        record = cursor.fetchone()       
         return db.build_from_record(models.Game, record)
 
     def try_sibling_params_if_None(self, conn, cursor):
@@ -50,7 +50,6 @@ class Game():
             self.genre = sib.genre
             db.update_column(self, 'genre', conn, cursor)
         self.check_update_game_engine_reldate(sib, conn, cursor)
-        return
         
     def check_update_game_engine_reldate(self, sib, conn, cursor):
         if not self.game_engine: 
@@ -61,7 +60,6 @@ class Game():
             if sib.release_date: 
                 self.release_date = sib.release_date
                 db.update_column(self, 'release_date', conn, cursor)
-        return
     
     def revenue_per_downloads(self, cursor):
         rpd_columns = ['revenue', 'downloads', 'RPD', 'inapp', 'shows_ads']
@@ -71,10 +69,10 @@ class Game():
                         WHERE e.game_id = %s"""
         cursor.execute(query_str, (self.id,))
         record = cursor.fetchone()
-        record_dict = dict(zip(rpd_columns, record))
+        record_dict = dict(zip(rpd_columns, record))        
         return record_dict
     
     def to_json(self, cursor):
         game_json = self.__dict__
-        game_json['RPD'] = self.revenue_per_downloads(cursor)
+        game_json['RPD'] = self.revenue_per_downloads(cursor)        
         return game_json
