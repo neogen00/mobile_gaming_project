@@ -15,6 +15,7 @@ TESTING = True
 DBTEST_NAME = os.getenv("DBTEST_NAME")
 DBTEST_USER = os.getenv("DBTEST_USER")
 DBTEST_PASSWORD = os.getenv("DBTEST_PASSWORD")
+DBTEST_HOST = os.getenv("DBTEST_HOST")
 
 # API Client variables
 RAWG_API_KEY = os.getenv("RA_APIKEY")

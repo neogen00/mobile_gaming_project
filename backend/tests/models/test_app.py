@@ -4,7 +4,7 @@ import pytest
 from src import create_app
 from src.db import db
 import src.models as models
-from settings import (DBTEST_USER, DBTEST_NAME, DBTEST_PASSWORD)
+from settings import (DBTEST_USER, DBTEST_NAME, DBTEST_PASSWORD, DBTEST_HOST)
 from tests.data.builder_data import build_records_testing
 
 
@@ -14,6 +14,7 @@ def app():
     flask_app.config['DATABASE'] = DBTEST_NAME
     flask_app.config['DB_USER'] = DBTEST_USER
     flask_app.config['DB_PASSWORD'] = DBTEST_PASSWORD
+    flask_app.config['DB_HOST'] = DBTEST_HOST
     flask_app.config['TESTING'] = True
     flask_app.config['DEBUG'] = True
 
