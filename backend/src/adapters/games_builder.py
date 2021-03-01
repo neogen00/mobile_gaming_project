@@ -25,6 +25,7 @@ class GameBuilder:
         release_date = self.RAWG_Client.find_release_date(name_filtered)
         if TS_details['os'] == 'ios':
             return dict(zip(self.attributes, [name_filtered, 'iOS', TS_details['publisher_name'], release_date, str(TS_details['categories']), None]))
+        
         return dict(zip(self.attributes, [name_filtered, 'android', TS_details['publisher_name'], release_date, TS_details['categories'][0].split('_')[1], None]))
 
     def run(self, TS_details, conn, cursor):
@@ -37,7 +38,7 @@ class GameBuilder:
             selected['game_engine'] = self.IGDB_Client.find_game_engine(game_name)  # limited query allowance, tap when DNE          
             game = db.save(models.Game(**selected), conn, cursor)
             game.exists = False
-        game.try_sibling_params_if_None(conn, cursor)
+        game.try_sibling_params_if_None(conn, cursor)        
         return game
 
 class EarningsBuilder:
@@ -45,13 +46,14 @@ class EarningsBuilder:
 
     def select_attributes(self, TS_details):
         price, inapp, shows_ads, revenue, downloads = TS_details['price'], TS_details['in_app_purchases'], TS_details['shows_ads'], TS_details['humanized_worldwide_last_month_revenue']['revenue'], TS_details['humanized_worldwide_last_month_downloads']['downloads']
+        
         return dict(zip(self.attributes, [price, inapp, shows_ads, revenue, downloads]))
 
     def run(self, TS_details, game, conn, cursor):
         earnings_attributes = self.select_attributes(TS_details)
         earnings = models.Earnings(**earnings_attributes)
         earnings.game_id = game.id 
-        earnings = db.save(earnings, conn, cursor)
+        earnings = db.save(earnings, conn, cursor)        
         return earnings
 
 class RatingBuilder:
@@ -62,7 +64,7 @@ class RatingBuilder:
 
     def select_attributes(self, TS_details, search_date, rank_type):
         TS_rating, ranking_type, ranking, date_created = TS_details['rating'], rank_type, TS_details['rank'], search_date
-        metacritic = self.RAWG_Client.find_metacritic(TS_details['name'])
+        metacritic = self.RAWG_Client.find_metacritic(TS_details['name'])       
         return dict(zip(self.attributes, [metacritic, TS_rating, ranking_type, ranking, date_created]))
 
     def run(self, TS_details, game, search_date, rank_type, conn, cursor):
@@ -70,5 +72,5 @@ class RatingBuilder:
         selected['game_id'] = game.id
         rating = models.Rating.find_by(selected['game_id'], selected['rank_type'], selected['ranking'], selected['date_created'], cursor)
         if not rating:
-            rating = db.save(models.Rating(**selected), conn, cursor)
+            rating = db.save(models.Rating(**selected), conn, cursor)        
         return rating
