@@ -2,39 +2,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import requests
 import streamlit as st
-
-
-API_URL_games = "http://127.0.0.1:5000/games"
-API_URL_earnings_search = "http://127.0.0.1:5000/games/earnings/search"
-API_URL_RPD = "http://127.0.0.1:5000/games/earnings/RPD"
-API_URL_ratings_all = "http://127.0.0.1:5000/games/all_data"
-
-
-def get_games():
-    response = requests.get(API_URL_games)
-    return response.json()
-
-def get_earnings_games():
-    response = requests.get(API_URL_earnings_search)
-    return response.json()
-
-def get_RPD():
-    response = requests.get(API_URL_RPD)
-    return response.json()
-
-def get_ratings_all():
-    response = requests.get(API_URL_ratings_all)
-    return response.json()
-
+from view_functions import (get_games, get_earnings_games, get_RPD, 
+    get_ratings_all, game_name)
+    
 
 st.title("Mobile Gaming Analytics")
 st.write("By Christopher Santos")
 st.header("Gaming the mobile gaming industry with metrics and stats")
 st.write("Different app stores i.e. (Google Play, App Store, etc.) each have their top app lists for users to see which game is trending.")
 st.write("Below is a chart containing revenue and download info for the top 10 of each list:")
-
 
 ratings_all = get_ratings_all()
 ratings_df = pd.DataFrame(ratings_all)
@@ -69,13 +46,9 @@ fig_r = px.scatter(ra_search,x='downloads',y='revenue',hover_name='name',
 st.plotly_chart(fig_r)
 
 
-games_list = get_games()
-
-def game_name(games_list):
-    return [game['name'] for game in games_list]
-
 st.write("Want to compare how two games do on the rankings? type/select each game (note: the sidebar filters are also attached to the ranking chart)")
 
+games_list = get_games()
 games_collection = game_name(games_list)
 game_search1 = st.selectbox("game1", games_collection) 
 game_search2 = st.selectbox("game2", games_collection)
@@ -103,7 +76,6 @@ game_earnings = get_earnings_games()
 ge_df = pd.DataFrame(game_earnings)
 dF = ge_df.drop('game',1).assign(**ge_df.game.apply(pd.Series))
 
-
 fig = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
   hover_data=['inapp','platform', 'publisher'],
   color='shows_ads',template='plotly_white',
@@ -116,7 +88,6 @@ fig_b = px.scatter(dF,x='downloads',y='revenue',hover_name='name',
   title="Game revenue vs downloads with price info")
 st.plotly_chart(fig_b)
 
-# RPD analysis
 
 rpd_dF = pd.DataFrame(get_RPD())
 rpd_dF = rpd_dF.drop('RPD',1).assign(**rpd_dF.RPD.apply(pd.Series))
